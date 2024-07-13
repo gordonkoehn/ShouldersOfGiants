@@ -89,6 +89,27 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
+          {!primaryWallet && !transactionSignature && (
+            <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
+            <div className="card bg-base-100 w-96 shadow-xl">
+            <figure>
+              <img
+                src="https://raw.githubusercontent.com/gordonkoehn/ShouldersOfGiants/main/logo.png"
+                alt="Shoes" />
+            </figure>
+                <div className="card-body">
+                  <h2 className="card-title">Quantum Mechanics 2019 Solutions</h2>
+                  <p>Full handwritten solutions by Gordon Koehn</p>
+                  <div className="card-actions justify-end">
+                  Sign in to get Access to Study Resources for 0.001 ETH.
+
+                  Any wallet supported, also smart wallets - powered by dynamics labs.
+                  </div>
+                </div>
+                </div>
+            </div>
+              )}
+
           {primaryWallet && !transactionSignature && (
             <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
               {/* <button onClick={() => handleSendTransaction()} className="btn btn-primary">
