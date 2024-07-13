@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useDynamicContext, useDynamicScopes } from "@dynamic-labs/sdk-react-core";
 import type { NextPage } from "next";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
 import { sendTransaction, signMessage } from "~~/lib/dynamic";
 
 const Home: NextPage = () => {
+  const test = useDynamicContext();
   const { primaryWallet, networkConfigurations } = useDynamicContext();
   const [messageSignature, setMessageSignature] = useState<string>("");
   const [transactionSignature, setTransactionSignature] = useState<string>("");
   const connectedAddress = primaryWallet?.address;
+
+  const { userHasScopes,userScopes } = useDynamicScopes();
+  console.log(userHasScopes('TST'));
+  console.log(userScopes);
 
   const handleSignMesssage = async () => {
     try {
@@ -33,8 +38,23 @@ const Home: NextPage = () => {
       if (!isTestnet) {
         alert("You're not on a testnet, proceed with caution.");
       }
-      const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet, networkConfigurations);
+      if (!primaryWallet) {
+        alert("No wallet connected");
+        return;
+      }
+      if (!networkConfigurations) {
+        alert("No network configurations found");
+        return;
+      }
+      const hash = await sendTransaction(primaryWallet, networkConfigurations);
+
+      if (!hash) {
+        alert("Transaction failed");
+        return;
+      }
+
       setTransactionSignature(hash);
+      primaryWallet?.connector?.waitForTransaction(hash);
 
       setTimeout(() => {
         setTransactionSignature("");
@@ -46,11 +66,13 @@ const Home: NextPage = () => {
 
   return (
     <>
+ 
+
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
             <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <span className="block text-4xl font-bold">Shoulders of Giants</span>
           </h1>
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
@@ -58,12 +80,17 @@ const Home: NextPage = () => {
           </div>
           {primaryWallet && !transactionSignature && (
             <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-              <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+              {/* <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Send 0.001 ETH to yourself
-              </button>
-              <button onClick={() => handleSignMesssage()} className="btn btn-primary">
-                Sign Hello World
-              </button>
+              </button> */}
+              {!userHasScopes('access') && <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+              Get Access to Study Resources for 0.001 ETH
+              </button>}
+              {userHasScopes('access') && <div className="flex items-center flex-col flex-grow pt-10">
+              Access to Study Resources granted: Quatum Mechnics Exam 2019!
+              <embed src="ghkjdvfsdhfbsdjkfnslf.pdf" width="800px" height="2100px" />
+              </div>
+            }
             </div>
           )}
           {primaryWallet && messageSignature && (
@@ -73,24 +100,11 @@ const Home: NextPage = () => {
             <p className="text-center-text-lg">Transaction processed! {transactionSignature}</p>
           )}
           <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
+            Your content will be shown here upon the purchase of the access token.
           </p>
         </div>
 
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
+        {/* <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
           <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
               <BugAntIcon className="h-8 w-8 fill-secondary" />
@@ -113,7 +127,7 @@ const Home: NextPage = () => {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
