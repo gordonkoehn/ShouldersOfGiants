@@ -1,7 +1,7 @@
 ![](./cover.png)
 
 <h4 align="center">
-  <a href="[https://www.youtube.com/watch?v=dkONR9dJD2](https://youtu.be/_jF8Wi2imgY)">Video Walkthrough</a>
+  <a href="[[https://www.youtube.com/watch?v=dkONR9dJD2](https://youtu.be/_jF8Wi2imgY)](https://youtu.be/_jF8Wi2imgY)">Video Walkthrough</a>
 </h4>
 
 __This is a solo Hackathon project for the EthGlobal Brussels 2024.__
