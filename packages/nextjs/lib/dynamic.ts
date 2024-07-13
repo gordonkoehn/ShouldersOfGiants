@@ -1,8 +1,10 @@
-import { Wallet } from "@dynamic-labs/sdk-react-core";
+import { EvmNetwork, Wallet } from "@dynamic-labs/sdk-react-core";
 import { NetworkConfigurationMap } from "@dynamic-labs/types";
 import { getOrMapViemChain } from "@dynamic-labs/viem-utils";
-import { Account, Chain, Hex, Transport, WalletClient, parseEther } from "viem";
+import { encodeCallData } from "permissionless/accounts/kernel/utils/encodeCallData";
+import { Account, Chain, Hex, Transport, WalletClient, encodeFunctionData, parseEther , createPublicClient} from "viem";
 import { notification } from "~~/utils/scaffold-eth";
+import  deployedContracts  from "~~/contracts/deployedContracts";
 
 export const signMessage = async (message: string, wallet: any): Promise<string> => {
   const connector = wallet?.connector;
@@ -10,29 +12,33 @@ export const signMessage = async (message: string, wallet: any): Promise<string>
   return await connector.signMessage(message);
 };
 
+
+export const getCurrentNetwork = async (wallet: Wallet,  networkConfigurations: NetworkConfigurationMap): Promise<EvmNetwork> => {
+  const chainID = await wallet.connector.getNetwork();
+  const currentNetwork = networkConfigurations.evm?.find(network => network.chainId === chainID);
+
+  if (!currentNetwork) {
+    throw new Error("Network not found");
+  }
+
+  return currentNetwork as EvmNetwork;
+}
 export const sendTransaction = async (
-  address: any,
-  amount: string,
   wallet: Wallet,
   networkConfigurations: NetworkConfigurationMap,
 ): Promise<string | undefined> => {
   try {
     const walletClient = wallet.connector.getWalletClient<WalletClient<Transport, Chain, Account>>();
-
-    const chainID = await wallet.connector.getNetwork();
-    const currentNetwork = networkConfigurations.evm?.find(network => network.chainId === chainID);
-
-    if (!currentNetwork) {
-      throw new Error("Network not found");
-    }
-
-    const chain = getOrMapViemChain(currentNetwork);
-
+    const currentNetwork = await getCurrentNetwork(wallet, networkConfigurations);
+    const chain = getOrMapViemChain(currentNetwork as EvmNetwork);
+    const abi = deployedContracts[31337].MintNFT_URA.abi;
+    const address = deployedContracts[31337].MintNFT_URA.address;
     const transaction = {
       account: wallet.address as Hex,
       to: address as Hex,
+      data: encodeFunctionData<typeof abi, "mintERC20">({abi, functionName: "mintERC20", args: []}),
       chain,
-      value: amount ? parseEther(amount) : undefined,
+      value: parseEther('0.001')
     };
 
     const transactionHash = await walletClient.sendTransaction(transaction);
@@ -45,3 +51,14 @@ export const sendTransaction = async (
     }
   }
 };
+
+export const waitForMint = async (wallet: Wallet, transactionHash: string): Promise<void> => {
+  const currentNetwork = await getCurrentNetwork(wallet, networkConfigurations);
+  const client = createPublicClient({ chain: getOrMapViemChain(currentNetwork as EvmNetwork), transport: "http" });
+
+  const receipt = await client.waitForTransactionReceipt({transactionHash});
+  // in receipt you have receipt.logs
+  // logs you parse using abi and extract ERC721 Transfer event
+  // from the event you taken tokenId argument
+  // you may displaz this event in UI or even ask metamask through rpc call to add it to list of tracked nfts
+}

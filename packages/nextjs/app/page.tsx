@@ -9,6 +9,7 @@ import { Address } from "~~/components/scaffold-eth";
 import { sendTransaction, signMessage } from "~~/lib/dynamic";
 
 const Home: NextPage = () => {
+  const test = useDynamicContext();
   const { primaryWallet, networkConfigurations } = useDynamicContext();
   const [messageSignature, setMessageSignature] = useState<string>("");
   const [transactionSignature, setTransactionSignature] = useState<string>("");
@@ -33,7 +34,21 @@ const Home: NextPage = () => {
       if (!isTestnet) {
         alert("You're not on a testnet, proceed with caution.");
       }
-      const hash = await sendTransaction(connectedAddress, "0.0001", primaryWallet, networkConfigurations);
+      if (!primaryWallet) {
+        alert("No wallet connected");
+        return;
+      }
+      if (!networkConfigurations) {
+        alert("No network configurations found");
+        return;
+      }
+      const hash = await sendTransaction(primaryWallet, networkConfigurations);
+
+      if (!hash) {
+        alert("Transaction failed");
+        return;
+      }
+
       setTransactionSignature(hash);
 
       setTimeout(() => {
@@ -50,7 +65,7 @@ const Home: NextPage = () => {
         <div className="px-5">
           <h1 className="text-center">
             <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
+            <span className="block text-4xl font-bold">Shoulders of Giants</span>
           </h1>
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
@@ -61,8 +76,8 @@ const Home: NextPage = () => {
               <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Send 0.001 ETH to yourself
               </button>
-              <button onClick={() => handleSignMesssage()} className="btn btn-primary">
-                Sign Hello World
+              <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+                Get Access to Study Resources for 1 USD
               </button>
             </div>
           )}
