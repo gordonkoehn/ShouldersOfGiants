@@ -84,10 +84,11 @@ const Home: NextPage = () => {
                 Send 0.001 ETH to yourself
               </button> */}
               {!userHasScopes('access') && <button onClick={() => handleSendTransaction()} className="btn btn-primary">
-                Get Access to Study Resources for 1 USD
+              Get Access to Study Resources for 0.001 ETH
               </button>}
               {userHasScopes('access') && <div className="flex items-center flex-col flex-grow pt-10">
-              Download files button
+              Access to Study Resources granted: Quatum Mechnics Exam 2019!
+              <embed src="ghkjdvfsdhfbsdjkfnslf.pdf" width="800px" height="2100px" />
               </div>
             }
             </div>
