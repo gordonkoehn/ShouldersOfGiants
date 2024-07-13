@@ -30,6 +30,10 @@ contract MintNFT_URA is ERC721 {
         _safeMint(msg.sender, tokenId);   
     }
 
+    function _baseURI() internal override view returns (string memory) {
+        return "https://g15n.net/ethglobalnfts/nft.json";
+    }
+
     // function mintERC20WithPermit( 
     //     uint256 deadline,
     //     uint8 v,
