@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useDynamicContext, useDynamicScopes } from "@dynamic-labs/sdk-react-core";
 import type { NextPage } from "next";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
@@ -14,6 +14,10 @@ const Home: NextPage = () => {
   const [messageSignature, setMessageSignature] = useState<string>("");
   const [transactionSignature, setTransactionSignature] = useState<string>("");
   const connectedAddress = primaryWallet?.address;
+
+  const { userHasScopes,userScopes } = useDynamicScopes();
+  console.log(userHasScopes('TST'));
+  console.log(userScopes);
 
   const handleSignMesssage = async () => {
     try {
@@ -50,6 +54,7 @@ const Home: NextPage = () => {
       }
 
       setTransactionSignature(hash);
+      primaryWallet?.connector?.waitForTransaction(hash);
 
       setTimeout(() => {
         setTransactionSignature("");
@@ -61,6 +66,8 @@ const Home: NextPage = () => {
 
   return (
     <>
+ 
+
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
@@ -73,12 +80,16 @@ const Home: NextPage = () => {
           </div>
           {primaryWallet && !transactionSignature && (
             <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-              <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+              {/* <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Send 0.001 ETH to yourself
-              </button>
-              <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+              </button> */}
+              {!userHasScopes('TST') && <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Get Access to Study Resources for 1 USD
-              </button>
+              </button>}
+              {userHasScopes('TST') && <div className="flex items-center flex-col flex-grow pt-10">
+              Download files button
+              </div>
+            }
             </div>
           )}
           {primaryWallet && messageSignature && (
