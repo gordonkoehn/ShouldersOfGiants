@@ -31,8 +31,8 @@ export const sendTransaction = async (
     const walletClient = wallet.connector.getWalletClient<WalletClient<Transport, Chain, Account>>();
     const currentNetwork = await getCurrentNetwork(wallet, networkConfigurations);
     const chain = getOrMapViemChain(currentNetwork as EvmNetwork);
-    const abi = deployedContracts[31337].MintNFT_URA.abi;
-    const address = deployedContracts[31337].MintNFT_URA.address;
+    const abi = deployedContracts[84532].MintNFT_URA.abi;
+    const address = deployedContracts[84532].MintNFT_URA.address;
     const transaction = {
       account: wallet.address as Hex,
       to: address as Hex,

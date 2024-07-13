@@ -83,10 +83,10 @@ const Home: NextPage = () => {
               {/* <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Send 0.001 ETH to yourself
               </button> */}
-              {!userHasScopes('TST') && <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+              {!userHasScopes('access') && <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Get Access to Study Resources for 1 USD
               </button>}
-              {userHasScopes('TST') && <div className="flex items-center flex-col flex-grow pt-10">
+              {userHasScopes('access') && <div className="flex items-center flex-col flex-grow pt-10">
               Download files button
               </div>
             }
