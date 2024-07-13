@@ -74,6 +74,17 @@ const Home: NextPage = () => {
             <span className="block text-2xl mb-2">Welcome to</span>
             <span className="block text-4xl font-bold">Shoulders of Giants</span>
           </h1>
+          <h2 className="text-center">
+          <span className="block text-3xl font-italic">Exam Paper solutions for BSc Physics at University College London
+          </span>
+          </h2>
+          <p className="text-center text-lg">
+            Noone can sustain a physics degree without solutions!Here I am sharing mine. <br />
+            Payment is to keep the page running. <br />
+             If these solutions seem smart it is because I have stood on the shoulders of giants before me. <br />
+            <br />
+            "If I have seen further, it is by standing on the shoulders of giants.” - Isaac Newton
+          </p>
           <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
@@ -83,9 +94,23 @@ const Home: NextPage = () => {
               {/* <button onClick={() => handleSendTransaction()} className="btn btn-primary">
                 Send 0.001 ETH to yourself
               </button> */}
-              {!userHasScopes('access') && <button onClick={() => handleSendTransaction()} className="btn btn-primary">
-              Get Access to Study Resources for 0.001 ETH
-              </button>}
+              {!userHasScopes('access') && <div className="card bg-base-100 w-96 shadow-xl">
+                <figure>
+                  <img
+                    src="https://raw.githubusercontent.com/gordonkoehn/ShouldersOfGiants/main/logo.png"
+                    alt="Shoes" />
+                </figure>
+                <div className="card-body">
+                  <h2 className="card-title">Quantum Mechanics 2019 Solutions</h2>
+                  <p>Full handwritten solutions by Gordon Koehn</p>
+                  <div className="card-actions justify-end">
+                  <button onClick={() => handleSendTransaction()} className="btn btn-primary">
+                  Get Access to Study Resources for 0.001 ETH
+              </button>
+                  </div>
+                </div>
+              </div>
+              }
               {userHasScopes('access') && <div className="flex items-center flex-col flex-grow pt-10">
               Access to Study Resources granted: Quatum Mechnics Exam 2019!
               <embed src="ghkjdvfsdhfbsdjkfnslf.pdf" width="800px" height="2100px" />
